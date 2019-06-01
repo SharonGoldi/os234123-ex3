@@ -4,34 +4,34 @@
 --------------------------------------------------------------------------------*/
 void Game::run() {
 
-	_init_game(); // Starts the threads and all other variables you need
-	print_board("Initial Board");
+	_init_game(); // Starts the threads and all other variables you need // TODO
+	print_board("Initial Board"); // TODO
 	for (uint i = 0; i < m_gen_num; ++i) {
 		auto gen_start = std::chrono::system_clock::now();
-		_step(i); // Iterates a single generation 
+		_step(i); // Iterates a single generation // TODO
 		auto gen_end = std::chrono::system_clock::now();
 		m_gen_hist.push_back((double)std::chrono::duration_cast<std::chrono::microseconds>(gen_end - gen_start).count());
 		print_board(nullptr);
 	} // generation loop
 	print_board("Final Board");
-	_destroy_game();
+	_destroy_game(); // TODO
 }
 
-void Game::_init_game() {
+void Game::_init_game() { // TODO
 
 	// Create game fields - Consider using utils:read_file, utils::split
 	// Create & Start threads
 	// Testing of your implementation will presume all threads are started here
 }
 
-void Game::_step(uint curr_gen) {
+void Game::_step(uint curr_gen) { // TODO
 	// Push jobs to queue
 	// Wait for the workers to finish calculating 
 	// Swap pointers between current and next field 
 	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade 
 }
 
-void Game::_destroy_game(){
+void Game::_destroy_game(){ // TODO
 	// Destroys board and frees all threads and resources 
 	// Not implemented in the Game's destructor for testing purposes. 
 	// All threads must be joined here
@@ -64,7 +64,7 @@ inline void Game::print_board(const char* header) {
 
 }
 
-
+// TODO: use this for printing the board
 /* Function sketch to use for printing the board. You will need to decide its placement and how exactly 
 	to bring in the field's parameters. 
 
