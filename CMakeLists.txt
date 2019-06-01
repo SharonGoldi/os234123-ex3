@@ -9,7 +9,8 @@ add_executable(os234123_ex3
         part1/Headers.hpp
         part1/PCQueue.cpp
         part1/PCQueue.hpp
-        part1/Semaphore.hpp part1/Semaphore.cpp)
+        part1/Semaphore.hpp part1/Semaphore.cpp
+        tests/queue_test.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 

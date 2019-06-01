@@ -2,6 +2,7 @@
 #define _QUEUEL_H
 #include "Headers.hpp"
 #include "Semaphore.hpp"
+
 // Single Producer - Multiple Consumer queue
 template <typename T>class PCQueue
 {
@@ -25,7 +26,7 @@ private:
 	// Add your class memebers here
 	std::queue<T> q;
     pthread_mutex_t consumers_lock;
-    Semaphore avail_items;
+    Semaphore* avail_items;
 };
 // Recommendation: Use the implementation of the std::queue for this exercise
 
@@ -47,13 +48,13 @@ PCQueue<T>::PCQueue() {
 
 template <typename T>
 PCQueue<T>::~PCQueue() {
-    pthread_mutex_destroy(this->consumers_lock);
+    pthread_mutex_destroy(&this->consumers_lock);
     delete this->avail_items;
 }
 
 template <typename T>
 T PCQueue<T>::pop() {
-    avail_items.down();
+    avail_items->down();
     pthread_mutex_lock(&this->consumers_lock);
     T temp = q.front();
     q.pop();
@@ -65,7 +66,7 @@ T PCQueue<T>::pop() {
 template <typename T>
 void PCQueue<T>::push(const T& item) {
     q.push(item);
-    avail_items.up();
+    avail_items->up();
 }
 
 // TODO: maybe needs some more changes. push_all? delating the producer?
