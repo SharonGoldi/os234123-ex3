@@ -1,7 +1,9 @@
 #ifndef __GAMERUN_H
 #define __GAMERUN_H
 #include "Headers.hpp"
-#include "GameThread.hpp"
+#include "ConsumerThread.hpp"
+#include "PCQueue.hpp"
+#include "Task.hpp"
 /*--------------------------------------------------------------------------------
 								  Auxiliary Structures
 --------------------------------------------------------------------------------*/
@@ -35,10 +37,10 @@ public:
 protected: // All members here are protected, instead of private for testing purposes
 
 	// See Game.cpp for details on these three functions
-	void _init_game(); 
-	void _step(uint curr_gen); 
-	void _destroy_game(); 
-	inline void print_board(const char* header);
+	void _init_game(); // TODO
+	void _step(uint curr_gen); // TODO
+	void _destroy_game(); // TODO
+	inline void print_board(const char* header); // TODO
 
 	uint m_gen_num; 			 		// The number of generations to run
 	uint m_thread_num; 			 		// Effective number of threads = min(thread_num, field_height)
@@ -51,6 +53,7 @@ protected: // All members here are protected, instead of private for testing pur
 	bool print_on; // Allows the printing of the board. Turn this off when you are checking performance (Dry 3, last question)
 	
 	// TODO: Add in your variables and synchronization primitives  
+	PCQueue<Task> tasks_queue;
 
 };
 #endif

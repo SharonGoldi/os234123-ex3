@@ -2,7 +2,7 @@
 // Created by sharo on 6/1/2019.
 //
 
-#include "GameThread.hpp"
+#include "ConsumerThread.hpp"
 
 void GameThread::thread_workload() {
     // TODO: implement

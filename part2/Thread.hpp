@@ -4,33 +4,26 @@
 class Thread
 {
 public:
-	Thread(uint thread_id) : m_thread_id(thread_id) {}
+	explicit Thread(uint thread_id);
 
-	virtual ~Thread() {} // Does nothing
+	virtual ~Thread() = default;
 
 	// Returns true if the thread was successfully started, false if there was an error starting the thread 
 	// Creates the internal thread via pthread_create 
-	bool start() {
-		int output = pthread_create(&this->m_thread, NULL, entry_func, this);
-		return output == 0;
-	}
+	bool start();
 
 	// Will not return until the internal thread has exited. 
-	void join() {
-		pthread_join(this->m_thread, NULL);
-	}
+	void join();
 
 	// Returns the user identifier
-	uint thread_id() {
-		return m_thread_id; 
-	}
+	uint thread_id();
 protected:
 	// Implement this method in your subclass with the code you want your thread to run. 
 	virtual void thread_workload() = 0;
 	uint m_thread_id; // A number from 0 -> Number of threads initialized, providing a simple numbering for you to use
 
 private:
-	static void * entry_func(void * thread) { ((Thread *)thread)->thread_workload(); return NULL; }
+	static void * entry_func(void * thread);
 	pthread_t m_thread;
 };
 
