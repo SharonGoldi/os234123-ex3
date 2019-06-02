@@ -7,7 +7,7 @@
 
 #include "Thread.hpp"
 
-class ConsumerThread : Thread {
+class ConsumerThread : public Thread {
 protected:
     void thread_workload();
 };

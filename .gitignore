@@ -3,3 +3,5 @@ cmake-build-debug/
 tests/
 run_all_tests_facebook.sh
 tests_facebook/
+*.stackdump
+tests_staff/

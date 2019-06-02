@@ -1,5 +1,14 @@
 #include "Game.hpp"
 /*--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------*/
+Game::Game(game_params) {} // TODO
+Game::~Game() {} // TODO
+const vector<double> Game::gen_hist() const {} // Returns the generation timing histogram // TODO
+const vector<tile_record> Game::tile_hist() const {} // Returns the tile timing histogram // TODO
+uint Game::thread_num() const {} //Returns the effective number of running threads = min(thread_num, field_height) // TODO
+
+/*--------------------------------------------------------------------------------
 								
 --------------------------------------------------------------------------------*/
 void Game::run() {
@@ -36,7 +45,7 @@ void Game::_destroy_game(){ // TODO
 	// Not implemented in the Game's destructor for testing purposes. 
 	// All threads must be joined here
 	for (uint i = 0; i < m_thread_num; ++i) {
-        m_threadpool[j]->join();
+        m_threadpool[i]->join();
     }
 }
 

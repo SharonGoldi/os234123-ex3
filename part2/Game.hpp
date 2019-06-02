@@ -26,7 +26,7 @@ struct tile_record {
 class Game {
 public:
 
-	Game(game_params);
+    explicit Game(game_params);
 	~Game();
 	void run(); // Runs the game
 	const vector<double> gen_hist() const; // Returns the generation timing histogram  
