@@ -2,15 +2,15 @@
 // Created by sharo on 6/1/2019.
 //
 
-#ifndef OS234123_EX3_GAMETHREAD_H
-#define OS234123_EX3_GAMETHREAD_H
+#ifndef OS234123_EX3_CONSUMERTHREAD_H
+#define OS234123_EX3_CONSUMERTHREAD_H
 
 #include "Thread.hpp"
 
-class GameThread : Thread {
+class ConsumerThread : Thread {
 protected:
     void thread_workload();
 };
 
 
-#endif //OS234123_EX3_GAMETHREAD_H
+#endif //OS234123_EX3_CONSUMERTHREAD_H

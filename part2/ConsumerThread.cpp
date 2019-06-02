@@ -4,6 +4,6 @@
 
 #include "ConsumerThread.hpp"
 
-void GameThread::thread_workload() {
+void ConsumerThread::thread_workload() {
     // TODO: implement
 }
