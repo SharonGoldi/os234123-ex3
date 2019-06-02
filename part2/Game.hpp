@@ -27,8 +27,8 @@ struct tile_record {
 class Game {
 public:
 
-    explicit Game(game_params);
-	~Game();
+    explicit Game(game_params); // TODO: to complete.
+	~Game(); // TODO
 	void run(); // Runs the game
 	const vector<double> gen_hist() const; // Returns the generation timing histogram  
 	const vector<tile_record> tile_hist() const; // Returns the tile timing histogram
@@ -41,7 +41,8 @@ protected: // All members here are protected, instead of private for testing pur
 	void _init_game(); // TODO
 	void _step(uint curr_gen); // TODO
 	void _destroy_game(); // TODO
-	inline void print_board(const char* header); // TODO
+	inline void print_board(const char* header);
+	int calc_live_neighbors(int row, int col);
 
 	uint m_gen_num; 			 		// The number of generations to run
 	uint m_thread_num; 			 		// Effective number of threads = min(thread_num, field_height)
@@ -54,9 +55,12 @@ protected: // All members here are protected, instead of private for testing pur
 	bool print_on; // Allows the printing of the board. Turn this off when you are checking performance (Dry 3, last question)
 	
 	// TODO: Add in your variables and synchronization primitives  
-    vector<vector<int>> field;
+    vector<vector<int>>* curr_field;
+	vector<vector<int>>* next_field;
+
     unsigned long field_width;
     unsigned long field_height;
+    game_params gp;
 
 	PCQueue<Task> tasks_queue;
 
