@@ -1,6 +1,7 @@
 #ifndef __GAMERUN_H
 #define __GAMERUN_H
 #include "Headers.hpp"
+#include "utils.hpp"
 #include "ConsumerThread.hpp"
 #include "PCQueue.hpp"
 #include "Task.hpp"
@@ -53,6 +54,10 @@ protected: // All members here are protected, instead of private for testing pur
 	bool print_on; // Allows the printing of the board. Turn this off when you are checking performance (Dry 3, last question)
 	
 	// TODO: Add in your variables and synchronization primitives  
+    vector<vector<int>> field;
+    unsigned long field_width;
+    unsigned long field_height;
+
 	PCQueue<Task> tasks_queue;
 
 };
