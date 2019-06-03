@@ -13,7 +13,6 @@ add_executable(os234123_ex3
         part2/Thread.hpp
         part2/main.cpp
         part2/ConsumerThread.cpp
-        part2/Task.cpp
         part2/Thread.cpp)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
