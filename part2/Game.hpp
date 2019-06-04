@@ -4,6 +4,7 @@
 #include "utils.hpp"
 #include "ConsumerThread.hpp"
 #include "PCQueue.hpp"
+#include "tiles.hpp"
 /*--------------------------------------------------------------------------------
 								  Auxiliary Structures
 --------------------------------------------------------------------------------*/
@@ -14,22 +15,6 @@ struct game_params {
 	string filename;
 	bool interactive_on; 
 	bool print_on; 
-};
-
-struct tile_record {
-	double tile_compute_time; // Compute time for the tile
-	uint thread_id; // The thread responsible for the compute 
-};
-
-struct tile_job {
-	bool_mat* curr_field;
-	bool_mat* next_field;
-
-	int start_row;
-	int end_row;
-
-	int field_height;
-	int field_width;
 };
 /*--------------------------------------------------------------------------------
 									Class Declaration
@@ -52,7 +37,6 @@ protected: // All members here are protected, instead of private for testing pur
 	void _step(uint curr_gen); // TODO
 	void _destroy_game(); // TODO
 	inline void print_board(const char* header);
-	int calc_live_neighbors(int row, int col);
 
 	uint m_gen_num; 			 		// The number of generations to run
 	uint m_thread_num; 			 		// Effective number of threads = min(thread_num, field_height)
@@ -72,7 +56,12 @@ protected: // All members here are protected, instead of private for testing pur
 	uint field_height;
     game_params gp;
 
-	PCQueue<tile_job*> jobs_queue;
+	PCQueue<tile_job> jobs_queue;
+
+	uint done_job_counter;
+	uint rows_per_tile;
+
+	pthread_mutex_t lock;
 
 };
 

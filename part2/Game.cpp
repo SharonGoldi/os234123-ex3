@@ -68,25 +68,45 @@ void Game::_init_game() { // TODO
 	curr_field = new bool_mat(field);
 	next_field = new bool_mat(field);
 
+	// init the game params according to the gp received
 	m_gen_num = gp.n_gen;
 	m_thread_num = std::min(gp.n_thread, field_height);
 	interactive_on = gp.interactive_on;
 	print_on = gp.print_on;
 
+	// init the game params according to prev game params
+	rows_per_tile = field_height / m_thread_num;
+	done_job_counter = 0;
+
+	// init consumer-shared lock
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
+
+    pthread_mutex_t error_check_mutex;
+    pthread_mutex_init(&error_check_mutex, &attr);
+    lock = error_check_mutex;
+
+    pthread_mutexattr_destroy(&attr);
+
 	// Create & Start threads
+	for (uint i = 0; i < m_thread_num; i++) {
+	    auto *t = new ConsumerThread(i, &jobs_queue, &m_tile_hist,  &lock, &done_job_counter);
+	    m_threadpool.push_back(t);
+	    t->start();
+	}
 	// Testing of your implementation will presume all threads are started here
 }
 
 void Game::_step(uint curr_gen) { // TODO
 	// Push jobs to queue
-	int rows_per_tile = field_height / m_thread_num;
-
-	for (int i = 0; i < m_thread_num; i++) {
+	for (uint i = 0; i < m_thread_num; i++) {
 		tile_job tj;
 		tj.field_height = field_height;
 		tj.field_width = field_width;
 		tj.curr_field = curr_field;
 		tj.next_field = next_field;
+		tj.is_end_of_game = false;
 
 		tj.start_row = rows_per_tile*i;
 		if (i == m_thread_num - 1) {
@@ -94,38 +114,39 @@ void Game::_step(uint curr_gen) { // TODO
 		} else {
 			tj.end_row = tj.start_row + rows_per_tile - 1;
 		}
-		jobs_queue.push(&tj);
+		jobs_queue.push(tj);
 	}
 
 	// Wait for the workers to finish calculating
-	//TODO: delete and replace with waiting logic
-	for (int k = 0; k < m_thread_num; k++) {
-		tile_job* tj = jobs_queue.pop();
+	// TODO: consider initializing tile_hist of size num_of_jobs*gen_num
+	//  and a vector of boolean done jobs. maybe this way we can get rid of locking
+	//  inside of ConsumerThread
+	while(done_job_counter != m_thread_num) {}
+	done_job_counter = 0;
 
-		for (int i = tj->start_row; i <= tj->end_row; i++) {
-			for (int j = 0; j < tj->field_width; j++) {
-				int live_neighbors = calc_live_neighbors(i, j);
-
-				(*tj->next_field)[i][j] = (live_neighbors == 3) ||
-										  (live_neighbors == 2 &&
-										   (*tj->curr_field)[i][j] == 1);
-			}
-		}
-	}
 	// Swap pointers between current and next field
 	swap(curr_field, next_field); // TODO: make sure it works
-	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade 
+	// NOTE: Threads must not be started here - doing so will lead to a heavy penalty in your grade
+
+	// push terminating jobs to PCQueue
+	if (curr_gen == m_gen_num - 1) {
+		for (int i = 0; i < m_thread_num; i++) {
+			tile_job tj_end;
+			tj_end.is_end_of_game = true;
+			jobs_queue.push(tj_end);
+		}
+	}
 }
 
-void Game::_destroy_game(){ // TODO
+void Game::_destroy_game(){
 	// Destroys board and frees all threads and resources
 	delete curr_field;
 	delete next_field;
-	// TODO: threads
-	// Not implemented in the Game's destructor for testing purposes. 
+	// Not implemented in the Game's destructor for testing purposes.
 	// All threads must be joined here
 	for (uint i = 0; i < m_thread_num; ++i) {
         m_threadpool[i]->join();
+        delete m_threadpool[i];
     }
 }
 
@@ -162,16 +183,4 @@ inline void Game::print_board(const char* header) {
 	}
 }
 
-int Game::calc_live_neighbors(int row, int col) {
 
-	int live_neighbors_counter = 0;
-
-	for (int i = row - 1; i <= row + 1; i++) {
-		for (int j = col - 1; j <= col +1; j++) {
-			if (i >= 0 && i < field_height && j >= 0 && j < field_width) {
-				live_neighbors_counter += (*curr_field)[i][j];
-			}
-		}
-	}
-	return live_neighbors_counter - (*curr_field)[row][col];
-}
